@@ -1,3 +1,5 @@
+require 'thread_safe'
+
 module Grape
   # The API class is the primary entry point for
   # creating Grape APIs.Users should subclass this
@@ -6,8 +8,14 @@ module Grape
     extend Validations::ClassMethods
 
     class << self
-      attr_reader :endpoints, :instance, :routes, :route_set, :settings, :versions
+      attr_reader :instance, :routes, :route_set, :settings, :versions
       attr_writer :logger
+
+      @endpoints = ThreadSafe::Array.new
+
+      def endpoints
+        @endpoints
+      end
 
       def logger(logger = nil)
         if logger
