@@ -2029,6 +2029,19 @@ describe Grape::API do
         last_response.body.should == 'yo'
       end
 
+      it 'mounted api endpoints responds to options' do
+        subject.version 'v1', using: :path
+
+        app = Class.new(Grape::API)
+        app.get('/hello') do
+          'hello'
+        end
+        subject.mount app
+
+        options '/v1/hello'
+        last_response.status.should == 204
+      end
+
       it 'applies the settings to nested mounted apis' do
         subject.version 'v1', using: :path
 
